@@ -4,7 +4,7 @@ Fraktal is a pattern-matching library for JavaScript that is inspired by Elixir.
 
 ## Usage
 
-```
+```js
 import { Fraktal } from 'fraktal';
 
 const func = Fraktal();
@@ -34,7 +34,7 @@ Fraktal utilizes the javascript Proxy object to intercept calls and keep track o
 
 Each function you define takes 2 arguments: a `match` and a `func`. The `match` is a function that must return `true` if the pattern should match. Fraktal comes with some built-in matchers on the `Pattern` object, such as `Pattern.objWithKeys` for matching objects or deeply nested objects. However, you can also define custom matchers for your given domain. For example:
 
-```
+```js
 const func = Fraktal();
 
 func.render = {
@@ -49,7 +49,7 @@ func.render = {
 
 Inspired by Elixir, Fraktal also supports a Pipe operator, which takes a value and passes it to subsequent functions. So, instead of:
 
-```
+```js
 let temp = 'a.b.c'
 temp = temp.toUpperCase()
 temp = temp.split()
@@ -59,11 +59,11 @@ temp // 'A-B-C'
 
 you can instead write:
 
-```
+```js
 new Pipe('a.b.c')
     .pipe(n => n.toUpperCase())
     .pipe(n => n.split())
-    .pipe(n => n.join('-))
+    .pipe(n => n.join('-'))
     .value // 'A-B-C'
 ```
 
