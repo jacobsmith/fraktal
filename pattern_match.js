@@ -56,10 +56,4 @@ let functionProxyHandler = {
   }
 }
 
-// func.fibonacci = { match: n => n === 1, func: i => 1 }
-// func.fibonacci = { match: n => n === 2, func: i => 1 }
-// func.fibonacci = { match: JPM.integer, func: i => {
-//   return (func.fibonacci(i - 1) + func.fibonacci(i - 2)) 
-// }}
-
 export { functionProxyHandler, objWithKeys, Pattern }

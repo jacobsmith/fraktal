@@ -1,4 +1,4 @@
-import { functionProxyHandler, jpm, objWithKeys, Pattern } from "./pattern_match";
+import { functionProxyHandler, objWithKeys, Pattern } from "./pattern_match";
   
 let func = new Proxy({}, functionProxyHandler)
 

@@ -1,6 +1,5 @@
 class Pipe {
   static inspect(value) {
-    console.log(value);
     return value;
   }
 
