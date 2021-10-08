@@ -1,6 +1,7 @@
-import { functionProxyHandler, objWithKeys, Pattern } from "./pattern_match";
+import { Pattern } from "./pattern_match";
+import { Fraktal } from './index';
   
-let func = new Proxy({}, functionProxyHandler)
+let func = Fraktal();
 
 beforeAll(() => {
   func.call = { match: x => x === 'obj' , func: () => {
@@ -11,16 +12,16 @@ beforeAll(() => {
     return 'any string';
   }};
 
-  func.call = { match: objWithKeys({ admin: true }), func: () => {
+  func.call = { match: Pattern.objWithKeys({ admin: true }), func: () => {
     return 'admin is true';
   }};
 
-  func.call = { match: objWithKeys({ student: Pattern.anyValue }), func: () => {
+  func.call = { match: Pattern.objWithKeys({ student: Pattern.anyValue }), func: () => {
     return 'student';
   }};
 
   func.call = { match: 
-    objWithKeys(
+    Pattern.objWithKeys(
       { data: {
          loading: false 
       }}
@@ -28,7 +29,7 @@ beforeAll(() => {
     return 'not loading'
   }};
   
-  func.call = { match: objWithKeys(
+  func.call = { match: Pattern.objWithKeys(
     { 
       data: { loading: true }
     }), 

@@ -1,9 +1,3 @@
-const Pattern = {
-  integer: (n) => Number.isInteger(n),
-  number: (n) => !isNaN(n) && !JPM.integer(n),
-  anyValue: (n) => n !== null && n !== undefined,
-}
-
 function objWithKeys(match) {
   return function(obj) {
     let doMatch = true;
@@ -30,6 +24,14 @@ function objWithKeys(match) {
     return doMatch;
   }
 }
+
+const Pattern = {
+  integer: (n) => Number.isInteger(n),
+  number: (n) => !isNaN(n) && !JPM.integer(n),
+  anyValue: (n) => n !== null && n !== undefined,
+  objWithKeys: objWithKeys
+}
+
 
 let functionProxyHandler = {
   set: (obj, prop, value) => {
