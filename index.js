@@ -1,11 +1,7 @@
-import { functionProxyHandler, objWithKeys, Pattern, reactProxyHandler } from './pattern_match';
+import { functionProxyHandler, objWithKeys, Pattern } from './pattern_match';
 import Pipe from './pipe';
 
-const Fraktal = (opts = { react: false }) => {
-	if (opts.react) {
-		return new Proxy({}, reactProxyHandler)
-	}
-
+const Fraktal = () => {
 	return new Proxy({}, functionProxyHandler)
 }
 

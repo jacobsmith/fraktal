@@ -70,6 +70,10 @@ let functionProxyHandler = {
   },
   get: (obj, prop, value) => {
     return (args) => {
+      if (obj.functions.initializeReactHooks) {
+        obj.functions.initializeReactHooks[0](args)
+      }
+
       let handled = false;
       for (let i = 0; i < obj.functions[prop].length; i++) {
         let { match, func } = obj.functions[prop][i]
@@ -94,41 +98,4 @@ let functionProxyHandler = {
   }
 }
 
-let reactProxyHandler = {
-  set: (obj, prop, value) => {
-    console.log('setting: ', obj, prop, value)
-    obj.functions = obj.functions || {};
-    obj.functions[prop] = obj.functions[prop] || [];
-    obj.functions[prop].push(value);
-    return true;
-  },
-  get: (obj, prop, value) => {
-    return (args) => {
-      if (obj.functions.initializeReactHooks) {
-        obj.functions.initializeReactHooks[0](args)
-      }
-
-      let handled = false;
-      for (let i = 0; i < obj.functions[prop].length; i++) {
-        let { match, func } = obj.functions[prop][i]
-
-        let matchFn = match;
-
-        if (typeof match == 'object') {
-          matchFn = objWithKeys(match)
-        }
-
-        if (matchFn(args)) {
-          handled = true;
-          return func(args)
-        }
-      }
-
-      if (!handled) {
-        throw "Not handled! " + JSON.stringify(args)
-      }
-    }
-  }
-}
-
-export { functionProxyHandler, objWithKeys, Pattern, reactProxyHandler }
+export { functionProxyHandler, objWithKeys, Pattern }
