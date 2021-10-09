@@ -2,6 +2,10 @@
 
 Fraktal is a pattern-matching library for JavaScript that is inspired by Elixir. It can perform pattern-matching and includes support for nested objects.
 
+## Installation
+
+`npm install fraktal`
+
 ## Usage
 
 ```js
