@@ -1,6 +1,6 @@
 {
   "name": "fraktal",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Pattern matching in JavaScript. Inspired by Elixir.",
   "main": "index.js",
   "scripts": {
