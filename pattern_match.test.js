@@ -105,3 +105,21 @@ test('it can differentiate between nested arrays and objects', () => {
   expect(t.test({ data: [1] })).toEqual('empty array');
   expect(t.test({ data: [{}] })).toEqual('obj in array');
 })
+
+test('you can optionally define matches with array syntax', () => {
+  let t = Fraktal();
+  t.test = [Pattern.integer, () => 'yes!'];
+
+  expect(t.test(1)).toEqual('yes!')
+})
+
+test('you can optionally define multiple matches with array syntax', () => {
+  let t = Fraktal();
+  t.test = [
+    [(a) => a == 4, () => 'you passed 4'],
+    [Pattern.integer, () => 'yes!'],
+  ];
+
+  expect(t.test(4)).toEqual('you passed 4')
+  expect(t.test(1)).toEqual('yes!')
+})

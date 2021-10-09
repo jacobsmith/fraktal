@@ -65,7 +65,18 @@ let functionProxyHandler = {
   set: (obj, prop, value) => {
     obj.functions = obj.functions || {};
     obj.functions[prop] = obj.functions[prop] || [];
-    obj.functions[prop].push(value);
+
+    if (Array.isArray(value)) {
+      if (Array.isArray(value[0])) {
+        value.map(v => obj.functions[prop].push({ match: v[0], func: v[1] }))
+      } else {
+        obj.functions[prop].push({ match: value[0], func: value[1] })
+      }
+    } else {
+      obj.functions[prop].push(value);
+    }
+
+
     return true;
   },
   get: (obj, prop, value) => {
