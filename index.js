@@ -1,4 +1,5 @@
-import { functionProxyHandler, objWithKeys, Pattern } from './pattern_match';
+import { functionProxyHandler } from './pattern_match';
+import { Pattern } from './pattern';
 import Pipe from './pipe';
 
 const Fraktal = () => {
@@ -6,7 +7,6 @@ const Fraktal = () => {
 }
 
 export {
-	objWithKeys,
 	Pattern,
 	Pipe,
   Fraktal,

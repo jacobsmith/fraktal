@@ -1,5 +1,4 @@
-import { Pattern } from "./pattern_match";
-import { Fraktal } from './index';
+import { Fraktal, Pattern } from './index';
   
 let func = Fraktal();
 
