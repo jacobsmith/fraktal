@@ -40,12 +40,20 @@ function objWithKeys(match, child) {
 
 const arraysMatch = (match) => {
   return (arg) => {
+    if (typeof(match) == 'function') {
+      return match(arg);
+    }
+
+    if (!Array.isArray(arg)) {
+      return false;
+    }
+
     let doMatch = true;
     for (let i = 0; i < match.length; i++) {
       if (typeof match[i] === 'function') {
         doMatch = match[i](arg[i])
       } else if (typeof match[i] === 'object') {
-        doMatch = objWithKeys(match[i], arg[i])
+        doMatch = objWithKeys(match[i])(arg[i])
       } else if (match[i] !== arg[i]) {
         doMatch = false;
       }
@@ -55,6 +63,19 @@ const arraysMatch = (match) => {
   }
 }
 
+const anyOrder = (matches) => {
+  return (args) => {
+    let match = true;
+    args.forEach(arg => {
+      let someMatch = matches.some(fn => fn(arg))
+      if (!someMatch) {
+        match = false;
+      }
+    })
+
+    return match;
+  }
+}
 
 const Pattern = {
   integer: (n) => Number.isInteger(n),
@@ -63,6 +84,7 @@ const Pattern = {
   string: (s) => typeof s === 'string',
   objWithKeys: objWithKeys,
   arraysMatch: arraysMatch,
+  anyOrder: anyOrder,
 }
 
 export { Pattern };

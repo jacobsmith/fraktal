@@ -6,8 +6,11 @@ const Fraktal = () => {
 	return new Proxy({}, functionProxyHandler)
 }
 
+const P = Pattern;
+
 export {
 	Pattern,
+  P,
 	Pipe,
-  Fraktal,
+	Fraktal,
 };

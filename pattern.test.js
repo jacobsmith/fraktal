@@ -1,4 +1,4 @@
-import { Pattern } from './index'
+import { P, Pattern } from './index'
 
 describe('Pattern', () => {
   describe('string', () => {
@@ -77,6 +77,26 @@ describe('Pattern', () => {
 
     test.each(testCases)('.anyValue($patternObj, $argObj, $expectedValue)', ({ patternObj, argObj, expectedValue }) => 
       expect(Pattern.objWithKeys(patternObj)(argObj)).toEqual(expectedValue) 
+    )
+  })
+  
+  describe('arraysMatch', () => {
+    const testCases = [
+      { patternObj: [], argObj: [],  expectedValue: true },
+      { patternObj: [{ hello: "world" }], argObj: {},  expectedValue: false },
+      { patternObj: [{ hello: "world" }], argObj: [{ hello: "world" }],  expectedValue: true },
+      { patternObj: [{ hello: "world" }], argObj: [{ hello: "there" }],  expectedValue: false },
+      { patternObj: [Pattern.string], argObj: ["foo"],  expectedValue: true },
+      { patternObj: [Pattern.string], argObj: [1],  expectedValue: false },
+      { patternObj: [Pattern.string, Pattern.number], argObj: ["foo", 1],  expectedValue: true },
+      { patternObj: [Pattern.string, Pattern.number], argObj: [1, "foo"],  expectedValue: false },
+      { patternObj: Pattern.anyOrder([Pattern.string, Pattern.number]), argObj: [1, "foo"], expectedValue: true},
+      { patternObj: Pattern.anyOrder([Pattern.objWithKeys({ hello: "world" })]), argObj: [{ hello: "world" }], expectedValue: true},
+      { patternObj: P.anyOrder([P.objWithKeys({ hello: P.string })]), argObj: [{ hello: "world" }], expectedValue: true},
+    ]
+      
+    test.each(testCases)('.arraysMatch($patternObj, $argObj, $expectedValue)', ({ patternObj, argObj, expectedValue }) => 
+      expect(Pattern.arraysMatch(patternObj)(argObj)).toEqual(expectedValue) 
     )
   })
 })
