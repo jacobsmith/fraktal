@@ -76,3 +76,49 @@ test('it can compute fibonacci sequence', () => {
   expect(func.fibonacci(3)).toEqual(2)
   expect(func.fibonacci(10)).toEqual(55)
 })
+
+test('it can match an object with a value of null, i.e., { data: null }', () => {
+  let t = Fraktal();
+
+  t.test = { match: { data: null }, func: () => 'null data' };
+
+  expect(t.test({ data: null })).toEqual('null data');
+})
+
+test('it can differentiate between arrays and objects', () => {
+  let t = Fraktal();
+  t.test = { match: {}, func: () => 'empty object' };
+  t.test = { match: [], func: () => 'empty array' };
+
+  expect(t.test({})).toEqual('empty object');
+  expect(t.test([])).toEqual('empty array');
+})
+
+test('it can differentiate between nested arrays and objects', () => {
+  let t = Fraktal();
+  t.test = { match: { data: {} }, func: () => 'empty object' };
+  t.test = { match: { data: [ Pattern.integer ] }, func: () => 'empty array' };
+  t.test = { match: { data: [ {} ] }, func: () => 'obj in array' };
+
+  expect(t.test({ data: {} })).toEqual('empty object');
+  expect(t.test({ data: [1] })).toEqual('empty array');
+  expect(t.test({ data: [{}] })).toEqual('obj in array');
+})
+
+test('you can optionally define matches with array syntax', () => {
+  let t = Fraktal();
+  t.test = [Pattern.integer, () => 'yes!'];
+
+  expect(t.test(1)).toEqual('yes!')
+})
+
+test('you can optionally define multiple matches with array syntax', () => {
+  let t = Fraktal();
+  t.test = [
+    [(a) => a == 4, () => 'you passed 4'],
+    [Pattern.integer, () => 'yes!'],
+  ];
+
+  expect(t.test(4)).toEqual('you passed 4')
+  expect(t.test(1)).toEqual('yes!')
+})

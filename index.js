@@ -3,7 +3,7 @@ import { Pattern } from './pattern';
 import Pipe from './pipe';
 
 const Fraktal = () => {
-  return new Proxy({}, functionProxyHandler)
+	return new Proxy({}, functionProxyHandler)
 }
 
 export {
