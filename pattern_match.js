@@ -18,7 +18,7 @@ let functionProxyHandler = {
     return true;
   },
   get: (obj, prop, value) => {
-    return (args) => {
+    return (...args) => {
       if (obj.functions.initializeReactHooks) {
         obj.functions.initializeReactHooks[0](args)
       }
@@ -34,9 +34,9 @@ let functionProxyHandler = {
           matchFn = Pattern.objWithKeys(match)
         }
 
-        if (matchFn(args)) {
+        if (matchFn(...args)) {
           handled = true;
-          return func(args)
+          return func(...args)
         }
       }
 

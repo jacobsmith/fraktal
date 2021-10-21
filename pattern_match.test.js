@@ -1,24 +1,57 @@
 import { Fraktal, Pattern } from './index';
-  
+
+const _ = Pattern.anyValue;
+
 let func = Fraktal();
 
 beforeAll(() => {
+
+
+
+  
+
+})
+
+test('can match a string literal', () => {
   func.call = { match: x => x === 'obj' , func: () => {
     return 'object';
   }};
 
+  expect(func.call('obj')).toEqual('object')
+})
+
+test('can match any string', () => {
   func.call = { match: x => (typeof x === 'string'), func: () => {
     return 'any string';
   }};
 
+	expect(func.call('hello')).toEqual('any string')
+	expect(func.call('hello world')).toEqual('any string')
+	expect(func.call('foobar')).toEqual('any string')
+	expect(func.call('')).toEqual('any string')
+})
+
+test('can match an object with a key', () => {
   func.call = { match: Pattern.objWithKeys({ admin: true }), func: () => {
     return 'admin is true';
   }};
+  
+  expect(func.call({ admin: true })).toEqual('admin is true')
+  expect(() => func.call({ admin: false })).toThrow('Not handled! {"admin":false}')
+})
 
+test('can match an object with any value', () => {
   func.call = { match: Pattern.objWithKeys({ student: Pattern.anyValue }), func: () => {
     return 'student';
   }};
 
+  expect(func.call({ student: true })).toEqual('student')
+  expect(func.call({ student: 1 })).toEqual('student')
+  expect(func.call({ student: {} })).toEqual('student')
+  expect(() => func.call({ student: null })).toThrow('Not handled! {"student":null}')
+})
+
+test('can match deeply nested objects', () => {
   func.call = { match: 
     Pattern.objWithKeys(
       { data: {
@@ -34,43 +67,18 @@ beforeAll(() => {
     }), 
     func: () => { return 'loading' }
   };
-
-  func.fibonacci = { match: n => n === 1, func: i => 1 }
-  func.fibonacci = { match: n => n === 2, func: i => 1 }
-  func.fibonacci = { match: Pattern.integer, func: i => {
-    return (func.fibonacci(i - 1) + func.fibonacci(i - 2)) 
-  }}
-})
-
-test('can match a string literal', () => {
-	expect(func.call('obj')).toEqual('object')
-})
-
-test('can match any string', () => {
-	expect(func.call('hello')).toEqual('any string')
-	expect(func.call('hello world')).toEqual('any string')
-	expect(func.call('foobar')).toEqual('any string')
-	expect(func.call('')).toEqual('any string')
-})
-
-test('can match an object with a key', () => {
-  expect(func.call({ admin: true })).toEqual('admin is true')
-  expect(() => func.call({ admin: false })).toThrow('Not handled! {"admin":false}')
-})
-
-test('can match an object with any value', () => {
-  expect(func.call({ student: true })).toEqual('student')
-  expect(func.call({ student: 1 })).toEqual('student')
-  expect(func.call({ student: {} })).toEqual('student')
-  expect(() => func.call({ student: null })).toThrow('Not handled! {"student":null}')
-})
-
-test('can match deeply nested objects', () => {
+  
   expect(func.call({ data: { loading: false }})).toEqual('not loading');
   expect(func.call({ data: { loading: true }})).toEqual('loading');
 })
 
 test('it can compute fibonacci sequence', () => {
+  func.fibonacci = { match: n => n === 1, func: i => 1 }
+  func.fibonacci = { match: n => n === 2, func: i => 1 }
+  func.fibonacci = { match: Pattern.integer, func: i => {
+    return (func.fibonacci(i - 1) + func.fibonacci(i - 2)) 
+  }}
+
   expect(func.fibonacci(1)).toEqual(1)
   expect(func.fibonacci(2)).toEqual(1)
   expect(func.fibonacci(3)).toEqual(2)
@@ -121,4 +129,45 @@ test('you can optionally define multiple matches with array syntax', () => {
 
   expect(t.test(4)).toEqual('you passed 4')
   expect(t.test(1)).toEqual('yes!')
+})
+
+test('you can accept any value with _', () => {
+  let t = Fraktal();
+  t.test = [
+    [Pattern.integer, () => 'Integer!'],
+    [_, () => 'Not an integer']
+  ];
+
+  expect(t.test(1)).toEqual('Integer!');
+  expect(t.test({})).toEqual('Not an integer');
+})
+
+test('you can do arity matching with _', () => {
+  let t = Fraktal();
+  t.test = [
+    [[1, _], () => '1'],
+    [[2, _], () => '2']
+  ];
+
+  expect(t.test([1, 'foo'])).toEqual('1')
+  expect(t.test([2, 3])).toEqual('2')
+})
+
+test('variable injection', () => {
+  let t = Fraktal();
+  t.test = [
+    { name: Pattern.string, occupation: _ }, ({ name, occupation }) => [name, occupation]
+  ]
+
+  expect(t.test({name: "Jacob", occupation: 4})).toEqual(["Jacob", 4])
+})
+
+test('named entities not in object', () => {
+  let t = Fraktal();
+  t.test = [
+    (a, b) => Pattern.string(a) && Pattern.integer(b), (name, int) => [name, int]
+  ]
+
+  expect(t.test("hello", 4)).toEqual(["hello", 4])
+
 })

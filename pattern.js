@@ -57,6 +57,10 @@ const arraysMatch = (match) => {
       } else if (match[i] !== arg[i]) {
         doMatch = false;
       }
+
+      if (!doMatch) {
+        return false;
+      }
     }
 
     return doMatch;
