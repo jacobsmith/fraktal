@@ -18,30 +18,46 @@ let functionProxyHandler = {
     return true;
   },
   get: (obj, prop, value) => {
-    return (...args) => {
+    let aritiesMatch = true;
+    return function (args) {
       if (obj.functions.initializeReactHooks) {
-        obj.functions.initializeReactHooks[0](args)
+        obj.functions.initializeReactHooks[0](args);
       }
 
       let handled = false;
       for (let i = 0; i < obj.functions[prop].length; i++) {
-        let { match, func } = obj.functions[prop][i]
+        let { match, func } = obj.functions[prop][i];
         let matchFn = match;
 
         if (Array.isArray(match)) {
           matchFn = Pattern.arraysMatch(match);
         } else if (typeof match == 'object') {
-          matchFn = Pattern.objWithKeys(match)
+          matchFn = Pattern.objWithKeys(match);
         }
 
-        if (matchFn(...args)) {
-          handled = true;
-          return func(...args)
+        if (arguments.length == 1) {
+          if (matchFn.length !== arguments.length) {
+            handled = false;
+            aritiesMatch = false;
+          } else if (matchFn(args)) {
+            handled = true;
+            return func(args);
+          }
+        } else {
+          // handle a variable number of arguments, i.e., (first, second) => 'foo'
+          if (matchFn.length !== arguments.length) {
+            handled = false;
+            aritiesMatch = false;
+          } else if (matchFn(...arguments)) {
+            handled = true;
+            return func(...arguments);
+          }
         }
+
       }
 
       if (!handled) {
-        throw "Not handled! " + JSON.stringify(args)
+        throw "Not handled! " + JSON.stringify(args);
       }
     }
   }

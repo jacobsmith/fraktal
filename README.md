@@ -70,6 +70,22 @@ func.render = {
 }
 ```
 
+## Function Arity
+
+In the `match` function, Fraktal will match on arity (that is, number of arguments). So:
+
+```js
+  let t = Fraktal();
+  t.test = [
+    [(a, b) => Pattern.string(a) && Pattern.integer(b), (name, int) => [name, int]],
+    [(a, b, _) => Pattern.string(a) && Pattern.integer(b), (name, int, _) => [name, int, _]], 
+  ]
+
+  expect(t.test("hello", 4)).toEqual(["hello", 4])
+  expect(t.test("hello", 4, 5)).toEqual(["hello", 4, 5])
+  expect(t.test("goodbye", 6, {})).toEqual(["goodbye", 6, {}])
+```
+
 ## React integration
 
 Fraktal also works with React, including React Hooks. If there are any hooks you wish to execute, define `initializeReactHooks` on your Fraktal instance.

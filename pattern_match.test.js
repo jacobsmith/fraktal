@@ -4,14 +4,6 @@ const _ = Pattern.anyValue;
 
 let func = Fraktal();
 
-beforeAll(() => {
-
-
-
-  
-
-})
-
 test('can match a string literal', () => {
   func.call = { match: x => x === 'obj' , func: () => {
     return 'object';
@@ -165,9 +157,11 @@ test('variable injection', () => {
 test('named entities not in object', () => {
   let t = Fraktal();
   t.test = [
-    (a, b) => Pattern.string(a) && Pattern.integer(b), (name, int) => [name, int]
+    [(a, b) => Pattern.string(a) && Pattern.integer(b), (name, int) => [name, int]],
+    [(a, b, _) => Pattern.string(a) && Pattern.integer(b), (name, int, _) => [name, int, _]], 
   ]
 
   expect(t.test("hello", 4)).toEqual(["hello", 4])
-
+  expect(t.test("hello", 4, 5)).toEqual(["hello", 4, 5])
+  expect(t.test("goodbye", 6, {})).toEqual(["goodbye", 6, {}])
 })
