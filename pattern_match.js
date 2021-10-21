@@ -57,7 +57,7 @@ let functionProxyHandler = {
       }
 
       if (!handled) {
-        throw "Not handled! " + JSON.stringify(args);
+        throw "Not handled! " + JSON.stringify(args) + (aritiesMatch ? '' : ' - No function with that arity.');
       }
     }
   }
